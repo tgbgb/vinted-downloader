@@ -44,12 +44,17 @@ def main() -> int:
         args.source if args.source.startswith("http") else Path(args.source)
     )
     download_seller_profile: bool = args.seller
-    output_dir: Path = Path(args.output_dir)
+    base_output_dir: Path = Path("downloads")  # set the base directory to 'downloads'
 
     html = load_html(source)
     details = Details(html)
+    
+    # Create directories with 'downloads', then seller's name, and then the item ID
+    seller_dir = base_output_dir / details.seller
+    item_id_dir = seller_dir / str(details.item_id)
+    item_id_dir.mkdir(parents=True, exist_ok=True)  
 
-    save_json(output_dir / "item.json", details.json)
+    save_json(item_id_dir / "item.json", details.json)
     Summary(
         source=str(source),
         title=details.title,
@@ -57,11 +62,11 @@ def main() -> int:
         seller=details.seller,
         seller_id=details.seller_id,
         last_logged_in=details.seller_last_logged_in,
-    ).save(output_dir / "item_summary")
+    ).save(item_id_dir / "item_summary")
 
-    download_photos(output_dir, "photo_{index}.jpg", *details.full_size_photo_urls)
+    download_photos(item_id_dir, "photo_{index}.jpg", *details.full_size_photo_urls)
     if download_seller_profile and details.seller_photo_url:
-        download_photos(output_dir, "seller.jpg", details.seller_photo_url)
+        download_photos(item_id_dir, "seller.jpg", details.seller_photo_url)
 
     return 0
 
@@ -153,6 +158,10 @@ class Details:
     @property
     def title(self) -> str:
         return str(self._json_data["item"]["title"])
+    
+    @property
+    def item_id(self) -> int:
+        return cast(int, self._json_data["item"]["id"])
 
     @property
     def description(self) -> str:
