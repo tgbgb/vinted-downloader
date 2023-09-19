@@ -20,9 +20,7 @@ python3 vinted_downloader.py --seller "PRODUCT_URL"
 
 This creates the following folders structure
 
-downloads/
-└── seller_name/
-    └── item_id/
+downloads/seller_name/item_id/
 
 Then you get the following files:
 
