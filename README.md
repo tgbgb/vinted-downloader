@@ -18,6 +18,12 @@ python3 vinted_downloader.py "PRODUCT_URL"
 python3 vinted_downloader.py --seller "PRODUCT_URL"
 ```
 
+This creates the following folders structure
+
+downloads/
+└── seller_name/
+    └── item_id/
+
 Then you get the following files:
 
 - `item.json`: all the information you want and you don't want
